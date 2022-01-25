@@ -10,8 +10,17 @@ RUN apt-get update && apt-get -y install \
   # only for stretch
   #&& apt-get -y install -t stretch-backports libreoffice --no-install-recommends \
   # sid variant
-  && apt-get -y install libreoffice --no-install-recommends \
+  && apt-get -y install libreoffice  libreoffice-l10n-zh-cn fonts-wqy-microhei --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales
+
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+        update-locale LANG=en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
 ENV JAR_FILE_NAME=app.war
 ENV JAR_FILE_BASEDIR=/opt/app
 ENV LOG_BASE_DIR=/var/log
